@@ -61,7 +61,7 @@ const AgregarProducto = () => {
 
   return (
     <div className="container">
-      <h2>Agregar Producto</h2>
+      <h1>Agregar Producto</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>

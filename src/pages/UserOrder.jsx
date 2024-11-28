@@ -20,7 +20,7 @@ const UserOrders = () => {
 
   return (
     <div className="container my-5">
-      <h2>Mis Pedidos</h2>
+      <h1>Mis Pedidos</h1>
       <ul className="list-group">
         {orders.map((order) => (
           <li key={order._id} className="list-group-item">

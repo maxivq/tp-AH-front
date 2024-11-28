@@ -30,7 +30,7 @@ const CreateOrder = () => {
 
   return (
     <div className="container my-5">
-      <h2>Crear Pedido</h2>
+      <h1>Crear Pedido</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="address" className="form-label">Dirección</label>

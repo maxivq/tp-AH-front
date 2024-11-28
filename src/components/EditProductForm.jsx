@@ -41,7 +41,7 @@ const EditProductForm = () => {
     const { name, value } = e.target;
     setProduct((prevProduct) => ({
       ...prevProduct,
-      [name]: name === 'precio' ? formatPrice(value) : value
+      [name]: value
     }));
   };
 
@@ -52,17 +52,13 @@ const EditProductForm = () => {
     }));
   };
 
-  const formatPrice = (value) => {
-    return new Intl.NumberFormat('es-ES').format(value);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token'); // Obtener el token JWT del almacenamiento local
     const formData = new FormData();
     formData.append('nombre', product.nombre);
     formData.append('descripcion', product.descripcion);
-    formData.append('precio', product.precio.replace(/\./g, '')); // Eliminar los puntos antes de enviar al backend
+    formData.append('precio', product.precio); // Permitir cualquier cantidad de cifras
     formData.append('categoria', product.categoria);
     if (product.imagen) {
       formData.append('imagen', product.imagen);
@@ -90,7 +86,7 @@ const EditProductForm = () => {
 
   return (
     <div className="container">
-      <h2>Editar Producto</h2>
+      <h1>Editar Producto</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
@@ -118,7 +114,7 @@ const EditProductForm = () => {
         <div className="mb-3">
           <label htmlFor="precio" className="form-label">Precio</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             id="precio"
             name="precio"

@@ -26,7 +26,7 @@ const OrderDetails = () => {
 
   return (
     <div className="container my-5">
-      <h2>Detalles del Pedido #{order._id}</h2>
+      <h1>Detalles del Pedido #{order._id}</h1>
       <p>Total: ${order.total}</p>
       <p>Dirección: {order.address}</p>
       <ul className="list-group">

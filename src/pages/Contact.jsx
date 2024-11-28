@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import Footer from '../components/Footer';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const Contact = () => {
 
   return (
     <div className="container my-5">
-      <h2>Contacto</h2>
+      <h1>Contacto</h1>
       <form onSubmit={handleSubmit}>
         <div className="row mb-3">
           <label htmlFor="name" className="col-sm-2 col-form-label">Nombre</label>

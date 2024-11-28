@@ -14,6 +14,7 @@ import Header from './components/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
+import Footer from './components/Footer';
 
 const App = () => {
     return (
@@ -41,6 +42,7 @@ const App = () => {
                     </Routes>
                 </main>
             </Router>
+                <Footer />
         </AuthProvider>
     );
 };

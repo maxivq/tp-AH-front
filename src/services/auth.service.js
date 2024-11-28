@@ -1,12 +1,12 @@
-import { call } from "./api.service";
+import { call } from './api.service';
 
 export async function login({ email, password }) {
   const response = await call({
-    uri: "users/login",
-    method: "POST",
+    uri: 'users/login',
+    method: 'POST',
     body: { email, password },
   });
-  return { token: response.token, role: response.role };
+  return response;
 }
 
 export async function register(name, email, password) {

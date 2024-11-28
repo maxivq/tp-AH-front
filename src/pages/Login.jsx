@@ -14,18 +14,21 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login({ email, password });
-      console.log('Login response:', response); // Agregar un log para verificar la respuesta
-      loginContext(response.token, response.role); // Asegúrate de que el backend devuelva el rol del usuario
+      loginContext(response.token, response.role);
       toast.success('Inicio de sesión exitoso');
       navigate('/');
     } catch (error) {
-      toast.error('Error al iniciar sesión: ' + error.message);
+      if (error.message === 'Correo electrónico o contraseña incorrectos' || error.message === 'Usuario no encontrado') {
+        toast.error('Correo electrónico o contraseña incorrectos');
+      } else {
+        toast.error('Error al iniciar sesión: ' + error.message);
+      }
     }
   };
 
   return (
     <div className="container my-5">
-      <h2>Iniciar Sesión</h2>
+      <h1>Iniciar Sesión</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Correo Electrónico</label>

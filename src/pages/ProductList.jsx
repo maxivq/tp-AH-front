@@ -75,7 +75,7 @@ const ProductList = () => {
 
   return (
     <div className="container">
-      <h2>Productos</h2>
+      <h1>Productos</h1>
       <div className="mb-3">
         <label htmlFor="categoria" className="form-label">Filtrar por categoría:</label>
         <select
