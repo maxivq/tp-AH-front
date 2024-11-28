@@ -1,0 +1,44 @@
+.product-card {
+    width: 100%;
+    max-width: 20rem;
+    height: 28rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.product-img {
+    height: 14rem;
+    object-fit: cover;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.card-title, .card-text {
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-title {
+    font-size: 1.25rem;
+}
+
+.card-text {
+    font-size: 1rem;
+}
+
+.card-buttons {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+}
