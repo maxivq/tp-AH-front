@@ -1,16 +1,52 @@
-import Producto from "../../models/producto.model.js";
-import productoView from "../../views/producto.view.js";
-import productoService from "../../services/producto.service.js"; // Asegúrate de que esta línea esté presente
+import Producto from '../../models/producto.model.js';
+import multer from 'multer';
+import path from 'path';
+
+// Obtener todos los productos con opción de límite
+export const getProductoss = async (req, res) => {
+    const limit = parseInt(req.query.limit) || 0;
+
+    try {
+        const productos = await Producto.find().limit(limit);
+        res.json(productos);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// Configurar multer para almacenar las imágenes
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage });
+
+export { upload };
+
+export const getProductsByCategory = async (req, res) => {
+    const { categoria } = req.params;
+
+    try {
+        const productos = await Producto.find({ categoria });
+        res.json(productos);
+    } catch (error) {
+        console.error('Error al buscar productos por categoría:', error);
+        res.status(500).json({ message: 'Error al buscar productos por categoría' });
+    }
+};
 
 // Obtener todos los productos
 export const getProductos = async (req, res) => {
     try {
         const productos = await Producto.find();
-        const contenido = productoView.crearListaProductos(productos);
-        const pagina = productoView.crearPagina("Lista de Productos", contenido);
-        res.send(pagina);
+        res.json(productos);
     } catch (err) {
-        res.status(500).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -19,89 +55,70 @@ export const getProductoId = async (req, res) => {
     try {
         const producto = await Producto.findById(req.params.id);
         if (producto == null) {
-            return res.status(404).send(productoView.crearPagina("Error", "<p>No se encontró el producto</p>"));
+            return res.status(404).json({ message: 'No se encontró el producto' });
         }
-        const contenido = productoView.crearDetalleProducto(producto);
-        const pagina = productoView.crearPagina("Detalle del Producto", contenido);
-        res.send(pagina);
+        res.json(producto);
     } catch (err) {
-        res.status(500).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
+        res.status(500).json({ message: err.message });
     }
 };
 
 // Agregar un nuevo producto
 export const agregarProducto = async (req, res) => {
+    const { nombre, descripcion, precio, categoria } = req.body;
+    const imagen = req.file ? req.file.filename : null;
+
     const producto = new Producto({
-        nombre: req.body.nombre,
-        descripcion: req.body.descripcion,
-        precio: req.body.precio,
-        categoria: req.body.categoria
+        nombre,
+        descripcion,
+        precio,
+        categoria,
+        imagen
     });
 
     try {
         const nuevoProducto = await producto.save();
-        const contenido = `<p>Producto agregado correctamente: ${nuevoProducto.nombre}</p>`;
-        const pagina = productoView.crearPagina("Nuevo Producto", contenido);
-        res.status(201).send(pagina);
+        res.status(201).json(nuevoProducto);
     } catch (err) {
-        res.status(400).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
-    }
-};
-
-// Reemplazar un producto
-export const reemplazarProducto = async (req, res) => {
-    try {
-        const producto = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true, overwrite: true });
-        if (producto == null) {
-            return res.status(404).send(productoView.crearPagina("Error", "<p>No se encontró el producto</p>"));
-        }
-        const contenido = `<p>Producto reemplazado correctamente: ${producto.nombre}</p>`;
-        const pagina = productoView.crearPagina("Producto Reemplazado", contenido);
-        res.send(pagina);
-    } catch (err) {
-        res.status(400).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
+        res.status(400).json({ message: err.message });
     }
 };
 
 // Actualizar un producto
 export const actualizarProducto = async (req, res) => {
+    const { nombre, descripcion, precio, categoria } = req.body;
+    const imagen = req.file ? req.file.filename : null;
+
     try {
-        const producto = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const producto = await Producto.findById(req.params.id);
         if (producto == null) {
-            return res.status(404).send(productoView.crearPagina("Error", "<p>No se encontró el producto</p>"));
+            return res.status(404).json({ message: 'No se encontró el producto' });
         }
-        const contenido = `<p>Producto actualizado correctamente: ${producto.nombre}</p>`;
-        const pagina = productoView.crearPagina("Producto Actualizado", contenido);
-        res.send(pagina);
+
+        producto.nombre = nombre;
+        producto.descripcion = descripcion;
+        producto.precio = precio;
+        producto.categoria = categoria;
+        if (imagen) {
+            producto.imagen = imagen;
+        }
+
+        const productoActualizado = await producto.save();
+        res.json(productoActualizado);
     } catch (err) {
-        res.status(400).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
+        res.status(400).json({ message: err.message });
     }
 };
 
 // Borrar un producto
-export const borrarProducto = async (req, res) => {
+export const eliminarProducto = async (req, res) => {
     try {
         const producto = await Producto.findByIdAndDelete(req.params.id);
         if (producto == null) {
-            return res.status(404).send(productoView.crearPagina("Error", "<p>No se encontró el producto</p>"));
+            return res.status(404).json({ message: 'No se encontró el producto' });
         }
-        const contenido = `<p>Producto eliminado correctamente: ${producto.nombre}</p>`;
-        const pagina = productoView.crearPagina("Producto Eliminado", contenido);
-        res.send(pagina);
+        res.json({ message: 'Producto eliminado' });
     } catch (err) {
-        res.status(500).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
-    }
-};
-
-// Función para filtrar productos
-export const filtrarProductos = async (req, res) => {
-    try {
-        const filtros = req.query;
-        const productos = await productoService.filtrarProductos(filtros);
-        const contenido = productoView.crearListaProductos(productos);
-        const pagina = productoView.crearPagina("Productos Filtrados", contenido);
-        res.send(pagina);
-    } catch (err) {
-        res.status(500).send(productoView.crearPagina("Error", `<p>${err.message}</p>`));
+        res.status(500).json({ message: err.message });
     }
 };

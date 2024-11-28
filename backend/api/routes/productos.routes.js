@@ -1,15 +1,15 @@
-import { Router } from "express";
-import * as controller from "../controllers/productos.controller.js";
+import { Router } from 'express';
+import { getProductos, getProductoss, getProductoId, agregarProducto, actualizarProducto, eliminarProducto, getProductsByCategory, upload } from '../controllers/productos.controller.js';
+import { verifyToken, isAdmin } from '../../middleware/auth.js';
 
 const router = Router();
 
-router.get("/productos/filtrar", controller.filtrarProductos);
-
-router.get("/productos", controller.getProductos);
-router.get("/productos/:id", controller.getProductoId);
-router.post("/productos", controller.agregarProducto);
-router.put("/productos/:id", controller.reemplazarProducto);
-router.patch("/productos/:id", controller.actualizarProducto);
-router.delete("/productos/:id", controller.borrarProducto);
+router.get('/', getProductos);
+router.get('/limited', getProductoss);
+router.get('/:id', getProductoId);
+router.get('/category/:categoria', getProductsByCategory);
+router.post('/', verifyToken, isAdmin, upload.single('imagen'), agregarProducto);
+router.put('/:id', verifyToken, isAdmin, upload.single('imagen'), actualizarProducto);
+router.delete('/:id', verifyToken, isAdmin, eliminarProducto);
 
 export default router;

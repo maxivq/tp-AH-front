@@ -1,29 +1,26 @@
-import express from "express";
-import connectDB from "./db/db.js";
-import productosRoute from "./api/routes/productos.routes.js";
-import mainRoute from "./routes/productos.routes.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import express from 'express';
+import cors from 'cors';
+import connectDB from './db/db.js';
+import productosRoute from './api/routes/productos.routes.js';
+import userRoute from './api/routes/user.routes.js';
+import authRoutes from './api/routes/auth.routes.js';
+import configureMiddleware from './middleware/middleware.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Obtener la ruta del directorio actual
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3333;
 
-// Conectar a MongoDB
 connectDB();
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+configureMiddleware(app);
 
-// Servir archivos estáticos
-app.use(express.static(path.join(__dirname, "views")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Servir archivos estáticos desde la carpeta uploads
+app.use('/api/productos', productosRoute); // Asegúrate de que la ruta esté correcta
+app.use('/api/users', userRoute);
+app.use('/api', authRoutes);
 
-// Rutas
-app.use("/api", productosRoute);
-app.use("/", mainRoute);
-
-app.listen(port, () => console.log("Servidor funcionando en el puerto " + port));
+app.listen(port, () => console.log(`Servidor funcionando en el puerto ${port}`));
