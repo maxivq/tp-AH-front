@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import ProductList from './pages/ProductList';
+import Cart from './pages/Cart';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -10,6 +11,7 @@ import ProductDetails from './pages/ProductDetails';
 import PrivateRoute from './components/PrivateRoute';
 import EditProductForm from './components/EditProductForm';
 import AuthProvider from './context/AuthContext';
+import CartProvider from './context/CartContext';
 import Header from './components/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -18,13 +20,15 @@ import Footer from './components/Footer';
 
 const App = () => {
     return (
-        <AuthProvider>
-            <Router>
+        <Router>
+            <AuthProvider>
+                <CartProvider>
                 <Header />
                 <main className="container-fluid my-4">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/productos" element={<ProductList />} />
+                        <Route path="/carrito" element={<Cart />} />
                         <Route path="/productos/:id" element={<ProductDetails />} />
                         <Route path="/editar-producto/:id" element={
                             <PrivateRoute roles={['admin']}>
@@ -41,9 +45,10 @@ const App = () => {
                         } />
                     </Routes>
                 </main>
-            </Router>
                 <Footer />
-        </AuthProvider>
+                </CartProvider>
+            </AuthProvider>
+        </Router>
     );
 };
 

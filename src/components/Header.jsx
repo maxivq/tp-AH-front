@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 
 const Header = () => {
-  const { isAuthenticated, logout, userRole } = useContext(AuthContext);
+  const { isAuthenticated, userRole, logout } = useContext(AuthContext);
+  const { getTotalQuantity } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -31,6 +33,11 @@ const Header = () => {
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/contacto">Contacto</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/carrito">
+                  Carrito ({getTotalQuantity()})
+                </Link>
               </li>
               {isAuthenticated ? (
                 <>

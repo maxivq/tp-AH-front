@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 
 const AgregarProducto = () => {
+  const { isAuthenticated, userRole } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [product, setProduct] = useState({
     nombre: '',
     descripcion: '',
@@ -11,8 +13,6 @@ const AgregarProducto = () => {
     categoria: '',
     imagen: null
   });
-  const { isAuthenticated, userRole } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,9 +35,11 @@ const AgregarProducto = () => {
     const formData = new FormData();
     formData.append('nombre', product.nombre);
     formData.append('descripcion', product.descripcion);
-    formData.append('precio', product.precio.replace(/\./g, '')); // Eliminar los puntos antes de enviar al backend
+    formData.append('precio', product.precio);
     formData.append('categoria', product.categoria);
-    formData.append('imagen', product.imagen);
+    if (product.imagen) {
+      formData.append('imagen', product.imagen);
+    }
 
     try {
       const response = await fetch('http://localhost:3333/api/productos', {
@@ -59,9 +61,13 @@ const AgregarProducto = () => {
     }
   };
 
+  if (!isAuthenticated || userRole !== 'admin') {
+    return <p>No tienes permiso para agregar productos.</p>;
+  }
+
   return (
     <div className="container">
-      <h1>Agregar Producto</h1>
+      <h2>Agregar Producto</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
@@ -89,7 +95,7 @@ const AgregarProducto = () => {
         <div className="mb-3">
           <label htmlFor="precio" className="form-label">Precio</label>
           <input
-            type="text"
+            type="number"
             className="form-control"
             id="precio"
             name="precio"
@@ -118,7 +124,6 @@ const AgregarProducto = () => {
             id="imagen"
             name="imagen"
             onChange={handleFileChange}
-            required
           />
         </div>
         <button type="submit" className="btn btn-primary">Agregar Producto</button>

@@ -1,0 +1,31 @@
+.cart-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .cart-item {
+    flex: 1 1 calc(33.333% - 1rem);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    max-width: 300px;
+  }
+  
+  .cart-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .cart-item img {
+    max-height: 150px;
+    object-fit: cover;
+  }
+  
+  .cart-item .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .cart-item .btn {
+    margin-top: 0.5rem;
+  }

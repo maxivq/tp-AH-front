@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 import Footer from '../components/Footer'; // Importar el componente Footer
 import '../styles/ProductList.css';
 
@@ -9,7 +10,9 @@ const ProductList = () => {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
-  const { userRole } = useContext(AuthContext);
+  const { userRole, isAuthenticated } = useContext(AuthContext);
+  const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -73,6 +76,16 @@ const ProductList = () => {
     }
   };
 
+  const handleAddToCart = (producto) => {
+    if (!isAuthenticated) {
+      toast.error('Debes iniciar sesión para añadir productos al carrito');
+      navigate('/login');
+      return;
+    }
+    addToCart(producto);
+    toast.success('Producto añadido al carrito');
+  };
+
   return (
     <div className="container">
       <h1>Productos</h1>
@@ -97,16 +110,16 @@ const ProductList = () => {
           Agregar Producto
         </Link>
       )}
-      <div className="product-list">
+      <div className="product-list row">
         {productos.map((producto) => (
-          <div key={producto._id} className="product-item card">
+          <div key={producto._id} className="product-item card col-md-4 mb-4">
             <img src={`http://localhost:3333/uploads/${producto.imagen}`} className="card-img-top" alt={producto.nombre} />
             <div className="card-body">
               <h5 className="card-title">{producto.nombre}</h5>
               <p className="card-text">{producto.descripcion}</p>
               <p className="card-text">${new Intl.NumberFormat('es-ES').format(producto.precio)}</p>
               <Link to={`/productos/${producto._id}`} className="btn btn-primary">Ver Detalle</Link>
-              {userRole === 'admin' && (
+              {userRole === 'admin' ? (
                 <div className="btn-group" role="group">
                   <Link to={`/editar-producto/${producto._id}`} className="btn btn-warning">
                     Editar
@@ -118,6 +131,13 @@ const ProductList = () => {
                     Eliminar
                   </button>
                 </div>
+              ) : (
+                <button
+                  onClick={() => handleAddToCart(producto)}
+                  className="btn btn-success mt-2"
+                >
+                  Añadir al Carrito
+                </button>
               )}
             </div>
           </div>

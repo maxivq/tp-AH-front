@@ -58,7 +58,7 @@ const EditProductForm = () => {
     const formData = new FormData();
     formData.append('nombre', product.nombre);
     formData.append('descripcion', product.descripcion);
-    formData.append('precio', product.precio); // Permitir cualquier cantidad de cifras
+    formData.append('precio', product.precio);
     formData.append('categoria', product.categoria);
     if (product.imagen) {
       formData.append('imagen', product.imagen);
@@ -86,7 +86,7 @@ const EditProductForm = () => {
 
   return (
     <div className="container">
-      <h1>Editar Producto</h1>
+      <h2>Editar Producto</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
